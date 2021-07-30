@@ -1,1 +1,136 @@
-Hello World
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Bundle Brawl</title>
+
+    <style>
+        canvas {
+            border: 10px solid #272C2D;
+            background-image: url("House.jpg")
+        }
+    </style>
+</head>
+
+<body onload="startGame()">
+    <script>
+      var flo;
+      var geico;
+        function startGame() {
+            geico = new component (370, 300, "geico-removebg-preview.png", 1100, 520, "image");
+            flo = new component (300, 300, "flo.png", 100, 500, "image");
+            //scoreText = new component ("30px", "consolas", "black", 700, 40, "text");
+
+            myGameArea.start()
+        }
+
+        function component (width, height, color, x, y, type) {
+          this.width = width;
+          this.height = height;
+          this.color = color;
+          this.x = x;
+          this.y = y;
+          this.type = type
+
+
+          this.update = function() {
+            ctx = myGameArea.context;
+            this.img = document.createElement('img')
+            this.img.src = color;
+            this.img.alt = "could not display";
+            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+
+            if(this.type == "rect") {
+
+              ctx.fillStyle = this.color;
+              ctx.fillRect(this.x, this.y, this.width, this.height)
+            }
+            else if(this.type == "image") {
+              ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+            }
+          }
+
+          this.crashWith = function (otherobj) {
+            //alert("hello");
+            var myleft = this.x;
+            var myright = this.x + (this.width);
+            var mytop = this.y;
+            var mybottom = this.y + (this.height);
+            var otherleft = otherobj.x;
+            var otherright = otherobj.x + (otherobj.width);
+            var othertop = otherobj.y;
+            var otherbottom = otherobj.y + (otherobj.height);
+            var crash = true;
+
+            if ((mybottom < othertop -70 ) || (mytop > otherbottom -70) || (myright < otherleft -200) || (myleft > otherright -200)){
+              crash = false;
+            }
+            return crash;
+          }
+      }
+        var myGameArea = {
+
+            canvas: document.createElement("canvas"),
+            start: function () {
+                this.canvas.width = 1642;
+                this.canvas.height = 800;
+                this.context = this.canvas.getContext("2d");
+                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                this.frameNo = 0;
+                this.interval = setInterval(updateGameArea, .01);
+            },
+            clear: function () {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+        }
+
+
+        function updateGameArea() {
+          myGameArea.clear();
+
+          geico.update();
+          flo.update();
+
+          if (geico.crashWith(flo)){
+            alert("YOU LOSE");
+          }
+
+          //scoreText.update();
+        }
+
+        function checkKey(e) {
+
+            if (e.keyCode == '37') {
+              flo.x -= 30;
+            }
+            else if (e.keyCode == '38') {
+              flo.y -= 30;
+            }
+            else if (e.keyCode == '39') {
+              flo.x += 30;
+            }
+            else if (e.keyCode == '40') {
+              flo.y += 30;
+            }
+            else if (e.keyCode == '87') {
+              geico.y -= 30;
+            }
+            else if (e.keyCode == '68') {
+              geico.x += 30;
+            }
+            else if (e.keyCode == '83') {
+              geico.y += 30;
+            }
+            else if (e.keyCode == '65') {
+              geico.x -= 30;
+            }
+          }
+        document.onkeydown = checkKey;
+
+    </script>
+
+</body>
+
+</html>
